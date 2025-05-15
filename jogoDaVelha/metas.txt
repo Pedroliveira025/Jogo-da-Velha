@@ -1,0 +1,9 @@
+colocar uma entrada para o jogo
+
+fazer o grid do jogo: DONE!
+
+deixa o usuário escolher X ou O
+
+deixar o usuário escolher jogar PvP ou PvM(modo aleatório ou IA)
+
+fazer o X vermelho e o O azul: DONE!

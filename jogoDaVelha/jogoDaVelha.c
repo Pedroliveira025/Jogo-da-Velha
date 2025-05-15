@@ -1,0 +1,225 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void printGrid(char grid[3][3]){
+    printf("\n");
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (grid[i][j] == 'X') {
+                printf(" \e[0;31m%c\e[0m", grid[i][j]);
+            }else if(grid[i][j] == 'O'){
+                printf(" \e[0;34m%c\e[0m", grid[i][j]);
+            }else {
+                printf(" %c", grid[i][j]);
+            }
+
+            if(j != 2){
+                printf(" |");
+            }
+        }
+        printf("\n");
+        if(i != 2){
+            printf("-----------");
+        }
+        printf("\n");
+    }
+}
+
+void doMoveX(char move, char grid[3][3]){
+    switch (move) {
+        case '1':
+            grid[0][0] = 'X';
+            break;
+        case '2':
+            grid[0][1] = 'X';
+            break;
+        case '3':
+            grid[0][2] = 'X';
+            break;
+        case '4':
+            grid[1][0] = 'X';
+            break;
+        case '5':
+            grid[1][1] = 'X';
+            break;
+        case '6':
+            grid[1][2] = 'X';
+            break;
+        case '7':
+            grid[2][0] = 'X';
+            break;
+        case '8':
+            grid[2][1] = 'X';
+            break;
+        case '9':
+            grid[2][2] = 'X';
+            break;
+    }
+};
+
+void doMoveO(char move, char grid[3][3]){
+    switch (move) {
+        case '1':
+            grid[0][0] = 'O';
+            break;
+        case '2':
+            grid[0][1] = 'O';
+            break;
+        case '3':
+            grid[0][2] = 'O';
+            break;
+        case '4':
+            grid[1][0] = 'O';
+            break;
+        case '5':
+            grid[1][1] = 'O';
+            break;
+        case '6':
+            grid[1][2] = 'O';
+            break;
+        case '7':
+            grid[2][0] = 'O';
+            break;
+        case '8':
+            grid[2][1] = 'O';
+            break;
+        case '9':
+            grid[2][2] = 'O';
+            break;
+    }
+};
+
+int verifyGrid(char grid[3][3]){
+    int win = 0;
+    if(grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2]){
+        win = 1;
+    }else if(grid[0][2] == grid[1][1] && grid[1][1] == grid[2][0]){
+        win = 1;
+    }
+    for (int i = 0; i < 3; i++) {
+        if(grid[i][0] == grid[i][1] && grid[i][1] == grid[i][2]){
+            win = 1;
+            break;
+        }else if(grid[0][i] == grid[1][i] && grid[1][i] == grid[2][i]){
+            win = 1;
+            break;
+        }
+    }
+
+    return win;
+}
+
+void bootHistory(char history[9]){
+    for (int i = 0; i < 9; i++) {
+        history[i] = '0';
+    }
+}
+
+int main(){
+    int opt;
+    char grid[3][3] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
+    char move;
+
+    char history[9];
+    bootHistory(history);
+
+    printf("Bem-vindo(a) ao jogo da Velha!\n");
+    printf("Qual modo você quer jogar?\nDigite 1 para j vs j e 2 para j vs máquina\n");
+
+    scanf("%d", &opt);
+
+    printf("Começando o jogo!\n");
+
+    if(opt == 1){
+        for (int i = 0; i < 9; i++) {
+            printGrid(grid);
+            scanf(" %c", &move);
+
+            for (int j = 0; j <= i; j++) {
+                while(move == history[j]){
+                    scanf(" %c", &move);
+                    j = 0;
+                }
+            }
+
+            history[i] = move;
+
+            if(i % 2 == 0) {
+                doMoveO(move, grid);
+            }else {
+                doMoveX(move, grid);
+            }
+
+            if(verifyGrid(grid) == 1){
+                printGrid(grid);
+                printf("VITÓRIA DO ");
+                if(i % 2 == 0){
+                    printf("\e[0;34mO\e[0m\n");
+                }else {
+                    printf("\e[0;31mX\e[0m\n");
+                }
+                break;
+            }else if (i == 8) {
+                printGrid(grid);
+                printf("Empate\n");
+            }
+        }
+    }else if(opt == 2){
+        srand((unsigned)time(NULL));
+
+        for (int i = 0; i < 9; i++) {
+            printGrid(grid);
+
+            if (i % 2 == 0) {
+                scanf(" %c", &move);
+            }else {
+                move = rand() % (9) + 49;
+                printf("%c", move);
+            }
+
+            if(i % 2 == 0){
+                for (int j = 0; j <= i; j++) {
+                    while(move == history[j]){
+                        scanf(" %c", &move);
+                        j = 0;
+                    }
+                }
+            }else{
+                for (int j = 0; j <= i; j++) {
+                    while(move == history[j]){
+                        move = rand() % (9) + 49;
+                        j = 0;
+                    }
+                }
+            }
+
+
+            history[i] = move;
+
+            if(i % 2 == 0) {
+                doMoveO(move, grid);
+            }else {
+                doMoveX(move, grid);
+            }
+
+            if(verifyGrid(grid) == 1){
+                printGrid(grid);
+                printf("VITÓRIA DO ");
+                if(i % 2 == 0){
+                    printf("\e[0;34mO\e[0m\n");
+                }else {
+                    printf("\e[0;31mX\e[0m\n");
+                }
+                break;
+            }else if (i == 8) {
+                printGrid(grid);
+                printf("Empate\n");
+            }
+        }
+    }
+
+
+
+    return 0;
+}
